@@ -1,21 +1,6 @@
 @setlocal DisableDelayedExpansion
 @echo off
 
-::  For command line switches, check https://massgrave.dev/
-::  If you want to better understand script, read from MAS separate files version. 
-::
-::============================================================================
-::
-::   This script is a part of 'Microsoft Activation Scripts' (MAS) project.
-::
-::   Homepage: massgrave.dev
-::      Email: windowsaddict@protonmail.com
-::
-::============================================================================
-
-
-
-
 ::========================================================================================================================================
 
 :: Re-launch the script with x64 process if it was initiated by x86 process on x64 bit Windows
@@ -205,22 +190,20 @@ echo:
 echo:                 Activation Methods:
 echo:
 echo:             [1] HWID        ^|  Windows           ^|   Permanent
-echo:             [2] KMS38       ^|  Windows           ^|   2038 Year
+echo:             [2] KMS38       ^|  Windows           ^|   Year 2038
 echo:             [3] Online KMS  ^|  Windows / Office  ^|    180 Days
 echo:             __________________________________________________      
 echo:
 echo:             [4] Activation Status
 echo:             [5] Extras
-echo:             [6] Help
 echo:             [0] Exit                                   
 echo:       ______________________________________________________________
 echo:
-call :_color2 %_White% "          " %_Green% "Enter a menu option in the Keyboard [1,2,3,4,5,6,0] :"
-choice /C:1234560 /N
+call :_color2 %_White% "          " %_Green% "Enter a menu option in the Keyboard [1,2,3,4,5,0] :"
+choice /C:123450 /N
 set _erl=%errorlevel%
 
-if %_erl%==7 exit /b
-if %_erl%==6 start https://massgrave.dev & goto :MainMenu
+if %_erl%==6 exit /b
 if %_erl%==5 goto:Extras
 if %_erl%==4 setlocal & call :_Check_Status_wmi & cls & endlocal & goto :MainMenu
 if %_erl%==3 setlocal & call :KMSActivation     & cls & endlocal & goto :MainMenu
@@ -363,7 +346,6 @@ call :_color %Green% "$OEM$ folder is successfully created on the Desktop."
 echo "%_oem%" | find /i "KMS38" 1>nul && (
 echo:
 echo To KMS38 activate Server Cor/Acor editions ^(No GUI Versions^),
-echo Check this page https://massgrave.dev/oem-folder
 )
 echo ___________________________________________________________________
 echo:
@@ -524,8 +506,6 @@ reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v EditionID 2>nul
 %eline%
 echo [%winos% ^| %winbuild%]
 echo Evaluation Editions cannot be activated. Download ^& Install full version of Windows OS.
-echo:
-echo https://massgrave.dev/
 goto dk_done
 )
 )
@@ -633,7 +613,7 @@ if defined altkey (set key=%altkey%&set changekey=1&set notworking=)
 if defined notworking if defined notfoundaltactID (
 call :dk_color %Red% "Checking Alternate Edition For HWID     [%altedition% Activation ID Not Found]"
 if exist "%SystemRoot%\Servicing\Packages\Microsoft-Windows-*EvalEdition~*.mum" (
-call :dk_color %Magenta% "Evaluation Windows Found. Install Full version of Windows. https://massgrave.dev/"
+call :dk_color %Magenta% "Evaluation Windows Found. Install Full version of Windows."
 )
 )
 
@@ -642,7 +622,6 @@ if not defined key (
 echo [%winos% ^| %winbuild% ^| SKU:%osSKU%]
 echo Unable to find this product in the supported product list.
 echo Make sure you are using updated version of the script.
-echo https://massgrave.dev
 echo:
 goto dk_done
 )
@@ -777,7 +756,7 @@ call :dk_color %Red% "Activation Failed %error_code%"
 if defined notworking (
 call :dk_color %Magenta% "At the time of writing this, HWID Activation was not supported for this product."
 ) else (
-call :dk_color2 %Magenta% "Check this page for help" %_Yellow% " https://massgrave.dev/troubleshoot"
+call :dk_color2 %Magenta% "Check this page for help"
 )
 )
 
@@ -1080,7 +1059,7 @@ exit /b
 ::  2nd column = Generic Retail/OEM/MAK Key
 ::  3rd column = SKU ID
 ::  4th column = Key part number
-::  5th column = Ticket signature value. It's as it is, it's not encoded. (Check https://massgrave.dev/hwid.html#Manual_Activation to see how it's generated)
+::  5th column = Ticket signature value. It's as it is, it's not encoded.
 ::  6th column = 1 = activation is not working (at the time of writing this), 0 = activation is working
 ::  7th column = Key Type
 ::  8th column = WMI Edition ID
@@ -1409,8 +1388,6 @@ echo:
 echo Check 'Change Edition' Option in MAS.
 ) else (
 echo Evaluation Editions cannot be activated. Download ^& Install full version of Windows OS.
-echo:
-echo https://massgrave.dev/
 )
 goto dk_done
 )
@@ -1428,8 +1405,6 @@ if not exist "!_work!\clipup.exe" (
 %eline%
 echo clipup.exe doesn't exist in Server Cor/Acor [No GUI] version.
 echo It's required for KMS38 Activation.
-echo Check below page on how to activate it.
-echo https://massgrave.dev/kms38.html
 goto dk_done
 )
 )
@@ -1524,7 +1499,6 @@ if not defined key if not defined _gvlk (
 echo [%winos% ^| %winbuild% ^| SKU:%osSKU%]
 echo Unable to find this product in the supported product list.
 echo Make sure you are using updated version of the script.
-echo https://massgrave.dev
 echo:
 goto dk_done
 )
@@ -1634,7 +1608,6 @@ if exist "%tdir%\*.xml" del /f /q "%tdir%\*.xml" %nul%
 
 ::  Signature value is as it is, it's not encoded
 ::  Session ID is in Base64 encoded format. It's decoded value is "OSMajorVersion=5;OSMinorVersion=1;OSPlatformId=2;PP=0;GVLKExp=2038-01-19T03:14:07Z;DownlevelGenuineState=1;"
-::  Check https://massgrave.dev/kms38.html#Manual_Activation to see how it's generated
 
 set "signature=C52iGEoH+1VqzI6kEAqOhUyrWuEObnivzaVjyef8WqItVYd/xGDTZZ3bkxAI9hTpobPFNJyJx6a3uriXq3HVd7mlXfSUK9ydeoUdG4eqMeLwkxeb6jQWJzLOz41rFVSMtBL0e+ycCATebTaXS4uvFYaDHDdPw2lKY8ADj3MLgsA="
 set "sessionId=TwBTAE0AYQBqAG8AcgBWAGUAcgBzAGkAbwBuAD0ANQA7AE8AUwBNAGkAbgBvAHIAVgBlAHIAcwBpAG8AbgA9ADEAOwBPAFMAUABsAGEAdABmAG8AcgBtAEkAZAA9ADIAOwBQAFAAPQAwADsARwBWAEwASwBFAHgAcAA9ADIAMAAzADgALQAwADEALQAxADkAVAAwADMAOgAxADQAOgAwADcAWgA7AEQAbwB3AG4AbABlAHYAZQBsAEcAZQBuAHUAaQBuAGUAUwB0AGEAdABlAD0AMQA7AAAA"
@@ -1714,7 +1687,7 @@ goto :k_final
 )
 
 call :dk_color %Red% "Activation Failed"
-call :dk_color2 %Magenta% "Check this page for help" %_Yellow% " https://massgrave.dev/troubleshoot"
+call :dk_color2 %Magenta% "Check this page for help"
 
 ::========================================================================================================================================
 
@@ -2101,7 +2074,6 @@ goto Done
 wmic path Win32_ComputerSystem get CreationClassName /value 2>nul | find /i "ComputerSystem" 1>nul || (
 %nceline%
 echo wmic.exe is not responding in the system.
-echo Check this page for help https://massgrave.dev/troubleshoot
 echo Aborting...
 goto Done
 )
@@ -2568,7 +2540,7 @@ if %ActWindows% EQU 0 (
     echo.&echo %_winos% %nKMS%
     if defined _eval echo %nEval%
     ) else (
-    echo.&echo Failed checking KMS Activation ID^(s^) for Windows.&echo Check this page for help https://massgrave.dev/troubleshoot &call :CheckWS
+    echo.&echo Failed checking KMS Activation ID^(s^) for Windows. &call :CheckWS
     exit /b
     )
   )
@@ -4961,7 +4933,7 @@ echo.
 )
 
 echo KMS server is not an issue in this case.
-call :_color2 %Magenta% "Check this page for help" %_Yellow% " https://massgrave.dev/troubleshoot"
+call :_color2 %Magenta% "Check this page for help"
 exit /b
 
 ::========================================================================================================================================
@@ -5303,12 +5275,6 @@ echo   - Files
 echo     C:\ProgramData\Activation-Renewal\Activation_task.cmd
 echo     C:\ProgramData\Activation-Renewal\Info.txt
 echo     C:\ProgramData\Activation-Renewal\Logs.txt
-echo ______________________________________________________________________________________________
-echo:
-echo   Online KMS Activation Script is a part of 'Microsoft Activation Scripts' [MAS] project.
-echo:   
-echo   Homepage: massgrave.dev
-echo      Email: windowsaddict@protonmail.com
 )>"%_dest%\Info.txt"
 exit /b
 
@@ -5450,16 +5416,6 @@ exit /b
 @echo off
 
 ::   Renew K-M-S activation with Online servers via scheduled task
-
-::============================================================================
-::
-::   This script is a part of 'Microsoft Activation Scripts' (MAS) project.
-::
-::   Homepage: massgrave.dev
-::      Email: windowsaddict@protonmail.com
-::
-::============================================================================
-
 
 if not "%~1"=="Task" (
 echo.
@@ -6034,8 +5990,6 @@ function B([int]$i=1){[Bat]::File($i+1,$i,$a,[ref]$b);expand -R $i -F:* .;del $i
 : BIN\
 : cleanosppx64.exe        SHA-1: d30a0e4e5911d3ca705617d17225372731c770e2
 : cleanosppx86.exe        SHA-1: 39ed8659e7ca16aaccb86def94ce6cec4c847dd6
-:
-: https://massgrave.dev/unreadable-codes-in-mas-aio.html
 #>
 
 :cleanospp:[
@@ -6952,44 +6906,38 @@ mode con cols=77 lines=30
 echo:
 echo:
 echo:       _______________________________________________________________
-echo:                                                   
-call :_color2 %_White% "             [1] " %_Green% "Help"
-echo:             ___________________________________________________
 echo:                                                                      
-echo:             [2] Dism RestoreHealth
-echo:             [3] SFC Scannow
+echo:             [1] Dism RestoreHealth
+echo:             [2] SFC Scannow
 echo:
-echo:             [4] Rebuild Licensing Tokens
-echo:             [5] Rebuild ClipSVC Licences
-echo:             [6] Clear Office vNext Licences
+echo:             [3] Rebuild Licensing Tokens
+echo:             [4] Rebuild ClipSVC Licences
+echo:             [5] Clear Office vNext Licences
 echo:             ___________________________________________________
 echo:                                                                      
-echo:             [7] Rebuild WMI Repository
-echo:             [8] Fix: Issues Caused By Gaming Spoofers
-echo:             [9] Fix: Issues Caused By KB971033 In Windows 7
-echo:             [G] Fix: Office Is Not Genuine Banner
-echo:             [E] Export Event Viewer Logs
+echo:             [6] Rebuild WMI Repository
+echo:             [7] Fix: Issues Caused By Gaming Spoofers
+echo:             [8] Fix: Issues Caused By KB971033 In Windows 7
+echo:             [9] Export Event Viewer Logs
 echo:             ___________________________________________________
 echo:
 echo:             [0] %_exitmsg%
 echo:       _______________________________________________________________
 echo:          
 call :_color2 %_White% "            " %_Green% "Enter a menu option in the Keyboard :"
-choice /C:123456789GE0 /N
+choice /C:1234567890 /N
 set _erl=%errorlevel%
 
-if %_erl%==12 exit /b
-if %_erl%==11 goto:exportevtlogs
-if %_erl%==10 start https://massgrave.dev/office-license-is-not-genuine &goto at_menu
-if %_erl%==9 goto:fixwindows7
-if %_erl%==8 goto:fixspoofer
-if %_erl%==7 goto:rewmi
-if %_erl%==6 goto:clearvnext
-if %_erl%==5 goto:reclipsvc
-if %_erl%==4 goto:retokens
-if %_erl%==3 goto:sfcscan
-if %_erl%==2 goto:dism_rest
-if %_erl%==1 start https://massgrave.dev/troubleshoot.html &goto at_menu
+if %_erl%==10 exit /b
+if %_erl%==9 goto:exportevtlogs
+if %_erl%==8 goto:fixwindows7
+if %_erl%==7 goto:fixspoofer
+if %_erl%==6 goto:rewmi
+if %_erl%==5 goto:clearvnext
+if %_erl%==4 goto:reclipsvc
+if %_erl%==3 goto:retokens
+if %_erl%==2 goto:sfcscan
+if %_erl%==1 goto:dism_rest
 goto :at_menu
 
 ::========================================================================================================================================
@@ -8122,7 +8070,6 @@ if not defined key (
 echo [%winos% ^| %winbuild% ^| SKU:%osSKU%]
 echo Unable to find this product in the HWID supported product list.
 echo Make sure you are using updated version of the script.
-echo https://massgrave.dev
 goto ins_done
 )
 
@@ -8509,7 +8456,6 @@ if not defined key (
 echo [%targetedition% ^| %winbuild%]
 echo Unable to get product key from pkeyhelper.dll
 echo Make sure you are using updated version of the script.
-echo https://massgrave.dev
 goto ced_done
 )
 
@@ -8652,7 +8598,6 @@ if not defined key (
 echo [%targetedition% ^| %winbuild%]
 echo Unable to get product key from pkeyhelper.dll
 echo Make sure you are using updated version of the script.
-echo https://massgrave.dev
 goto ced_done
 )
 
